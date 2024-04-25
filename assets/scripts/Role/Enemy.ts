@@ -3,12 +3,13 @@ const { ccclass, property } = _decorator;
 
 @ccclass('Enemy')
 export class Enemy extends Component {
-    start() {
 
-    }
-
-    update(deltaTime: number) {
-        
+    enemyDie(){
+        setTimeout(() => {
+            this.node?.destroy();
+        }, 100);
+        console.log("Ö´ÐÐÏú»ÙµÐÈË");
     }
 }
-
+
+

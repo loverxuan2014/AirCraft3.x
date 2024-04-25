@@ -13,6 +13,13 @@ export class Bullet extends Component {
         let newZ: number = this.node.position.z;
         this.node.setPosition(newX, newY, newZ);
     }
+
+    bulletDie(){
+        setTimeout(() => {
+            this.node?.destroy();
+        }, 100);
+        console.log("Ö´ÐÐÏú»Ù×Óµ¯");
+    }
 }
 
 
