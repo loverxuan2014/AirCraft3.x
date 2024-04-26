@@ -15,10 +15,10 @@ export class Bullet extends Component {
     }
 
     bulletDie(){
+        //???????????????
         setTimeout(() => {
             this.node?.destroy();
         }, 100);
-        console.log("Ö´ÐÐÏú»Ù×Óµ¯");
     }
 }
 

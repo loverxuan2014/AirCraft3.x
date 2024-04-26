@@ -1,10 +1,10 @@
-import { _decorator, Component, Node, Contact2DType, NodeEventType, v3, Prefab, EventTouch, instantiate, PhysicsSystem2D, Collider2D} from 'cc';
-import { Bullet } from '../Bullet/Bullet';
-import { Enemy } from './Enemy';
+import { _decorator, Component, Node, NodeEventType, v3, Prefab, EventTouch, instantiate, resources } from 'cc';
+import { Map } from '../Map/Map';
 const { ccclass, property } = _decorator;
 
 @ccclass('Player')
 export class Player extends Component {
+    //外部属性
     @property(Prefab)
     private bulletLv1_Pre: Prefab = null;
     @property(Prefab)
@@ -14,15 +14,13 @@ export class Player extends Component {
     @property(Prefab)
     private bulletLv4_pre: Prefab = null;
 
+    //配置属性
     bulletShootCD: number = 0.5;
     playerLevel: number = 1;
     KillScore: number = 0;
 
-    onLoad() {
-        //全局注册碰撞回调函数
-        PhysicsSystem2D.instance?.on(Contact2DType.BEGIN_CONTACT, this.onContactListen, this);
-        console.log("成功注册回调");
-    }
+    //Desc
+    NoPlaneLevel: string = "飞机等级异常";
 
     start() {
         //控制飞机移动
@@ -43,22 +41,30 @@ export class Player extends Component {
                     break;
                 case 4: playerBullet = instantiate(this.bulletLv4_pre);
                     break;
-                default: console.log("飞机等级异常");
+                default: console.log(this.NoPlaneLevel);
             }
             playerBullet.setParent(this.node.getParent());
             playerBullet.setPosition(v3(this.node.getPosition().x, this.node.getPosition().y + 50));
         },this.bulletShootCD);
     }
 
-    onContactListen(selfCollider: Collider2D, otherCollider: Collider2D) {
-        console.log(selfCollider.name + "与" + otherCollider.name + "开始碰撞");
-        if ((selfCollider.tag === 0 && otherCollider.tag === 1) || (selfCollider.tag === 1 && otherCollider.tag === 0)) {
-            selfCollider.tag === 0 ? selfCollider.getComponent(Bullet).bulletDie() : selfCollider.getComponent(Enemy).enemyDie();
-            console.log("通知销毁1");
-            otherCollider.tag === 1 ? otherCollider.getComponent(Enemy).enemyDie() : otherCollider.getComponent(Bullet).bulletDie();
-            console.log("通知销毁2");
-        }
+    //玩家死亡
+    playerDie(fail){
+        resources.load("Images/Img/planeDestory");
+        //this.StageFail(fail);
+    }
+    
+    //闯关成功
+    StagePass(){
+
     }
 
-    //update(deltaTime: number) {}
+    //闯关失败
+    StageFail(stopTime){
+        this.unscheduleAllCallbacks();
+        stopTime.getComponent(Map).stopPlaneBorn();
+        setTimeout(() => {
+            this.node?.destroy();
+        }, 500);
+    }
 }

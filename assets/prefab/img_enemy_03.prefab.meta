@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "c9de514b-056c-4642-acdf-7b6ac1af07a5",
+  "uuid": "57e09d3a-6eae-4097-ac12-33663793d436",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "background"
+    "syncNodeName": "img_enemy_03"
   }
 }

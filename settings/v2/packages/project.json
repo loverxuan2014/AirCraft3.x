@@ -7,24 +7,7 @@
     }
   },
   "physics": {
-    "collisionGroups": [
-      {
-        "index": 1,
-        "name": "EnemyPlane"
-      },
-      {
-        "index": 2,
-        "name": "PlayerPlane"
-      },
-      {
-        "index": 3,
-        "name": "EnemyBullet"
-      },
-      {
-        "index": 4,
-        "name": "PlayerBullet"
-      }
-    ],
+    "collisionGroups": [],
     "collisionMatrix": {
       "0": 1,
       "1": 16,

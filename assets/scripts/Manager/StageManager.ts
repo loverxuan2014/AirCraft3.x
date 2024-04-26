@@ -1,8 +1,8 @@
 import { _decorator, Component, Node } from 'cc';
 const { ccclass, property } = _decorator;
 
-@ccclass('ColliderManager')
-export class ColliderManager extends Component {
+@ccclass('StageManager')
+export class StageManager extends Component {
     start() {
 
     }
