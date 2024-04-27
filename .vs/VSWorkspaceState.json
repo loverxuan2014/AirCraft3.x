@@ -4,10 +4,10 @@
     "\\assets",
     "\\assets\\scripts",
     "\\assets\\scripts\\Bullet",
-    "\\assets\\scripts\\ColliderManager",
+    "\\assets\\scripts\\Manager",
     "\\assets\\scripts\\Map",
     "\\assets\\scripts\\Role"
   ],
-  "SelectedNode": "\\assets\\scripts\\Role\\Enemy.ts",
+  "SelectedNode": "\\assets\\scripts\\Manager\\StageManager.ts",
   "PreviewInSolutionExplorer": false
 }

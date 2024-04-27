@@ -12,15 +12,12 @@ export class Map extends Component {
     //配置属性
     enemyBornCD: number = 1000;
     enemyBornY: number = 578;
-    planeBorn: number = 0;
+    planeBorn: number = null;
 
     start() {
-        //刷新
-        this.planeBorn = setInterval(() => {
-            let enemy = instantiate(this.enemyPre);
-            enemy.setParent(this.node.getParent());
-            enemy.setPosition(v3(math.randomRange(-260, 260), this.enemyBornY));
-        }, this.enemyBornCD);
+        this.PlaneBorn();
+        //获取audio播放权限
+        navigator.mediaDevices.getUserMedia({ audio: true });
     }
 
     update(deltaTime: number) {
@@ -37,8 +34,17 @@ export class Map extends Component {
         }
     }
 
-    stopPlaneBorn(){
-        //停止计时器
+    PlaneBorn() {
+        //生成飞机
+        this.planeBorn = setInterval(() => {
+            let enemy = instantiate(this.enemyPre);
+            enemy.setParent(this.node.getParent());
+            enemy.setPosition(v3(math.randomRange(-260, 260), this.enemyBornY));
+        }, this.enemyBornCD);
+    }
+
+    stopPlaneBorn() {
+        //停止飞机生成计时器
         clearInterval(this.planeBorn);
     }
 }

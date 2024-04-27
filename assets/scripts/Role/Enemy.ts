@@ -20,9 +20,10 @@ export class Enemy extends Component {
             "Images/Img/planeDestory/spriteFrame",
             SpriteFrame,
             (err: Error, res: SpriteFrame) => {
-                if (!err) {
-                  this.node.getComponent(Sprite).spriteFrame = res;
+                if (err) {
+                    return console.error("load SpriteFrame failed:" + err);
                 }
+                this.node.getComponent(Sprite).spriteFrame  = res;
             });
         //一定要给延时，逻辑执行完再销毁
         setTimeout(() => {
