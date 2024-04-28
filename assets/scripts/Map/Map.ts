@@ -4,12 +4,11 @@ const { ccclass, property } = _decorator;
 @ccclass('Map')
 export class Map extends Component {
     //外部属性
-    @property
-    MapMoveSpeed: number = 0;
     @property(Prefab)
     enemyPre: Prefab = null;
 
     //配置属性
+    MapMoveSpeed: number = 100;
     enemyBornCD: number = 1000;
     enemyBornY: number = 578;
     planeBorn: number = null;
@@ -17,7 +16,7 @@ export class Map extends Component {
     start() {
         this.PlaneBorn();
         //获取audio播放权限
-        navigator.mediaDevices.getUserMedia({ audio: true });
+        //navigator.mediaDevices.getUserMedia({ audio: true });
     }
 
     update(deltaTime: number) {
