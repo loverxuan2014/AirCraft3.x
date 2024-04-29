@@ -10,16 +10,10 @@ export class Result extends Component {
         this.label.enabled = false;
     };
 
-    victory() {
+    Show(text: string, color: string) {
         this.label.enabled = true;
-        this.label.string = "Victory";
-        this.label.color = new Color().fromHEX("#E9A224");
-    }
-
-    failed() {
-        this.label.enabled = true;
-        this.label.string = "Fail"; 
-        this.label.color = new Color().fromHEX("#BDB9B1");
+        this.label.string = text;
+        this.label.color = new Color().fromHEX(color);
     }
 }
 

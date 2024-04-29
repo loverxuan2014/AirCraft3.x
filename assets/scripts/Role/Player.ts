@@ -1,6 +1,6 @@
-import { _decorator, Component, Node, NodeEventType, v3, Prefab, EventTouch, instantiate, resources, SpriteFrame, Sprite, Script, Vec3, UIOpacity } from 'cc';
+import { _decorator, Component, Node, NodeEventType, v3, Prefab, EventTouch, instantiate, Vec3, math } from 'cc';
 import { Map } from '../Map/Map';
-import { Enemy } from './Enemy';
+import { Result } from '../UI/Result';
 
 const { ccclass, property } = _decorator;
 
@@ -59,73 +59,72 @@ export class Player extends Component {
                             break;
                         case 4: playerBullet = instantiate(this.bulletLv4_pre);
                             break;
-                        default: console.log(this.NoPlaneLevel);
+                        default: console.error(this.NoPlaneLevel);
                     }
                     playerBullet.setParent(this.node.getParent());
                     playerBullet.setPosition(v3(this.node.getPosition().x, this.node.getPosition().y + 100));
                     this.curShootCD = 0;
                 } 
-            }                
+            }                 
         }
         else{
-                this.node.setPosition(this.bornPos);                
+            this.node.setPosition(this.bornPos);                
+        }
+
+        if(this.KillScore >= 30 && this.KillScore < 100){
+            this.otherNode1.getComponent(Map).stopPlaneBorn();
+            this.otherNode1.getComponent(Map).BossBorn();
+        }
+        else if(this.KillScore >= 100){
+            this.StagePass();
         }
     }
 
     //玩家死亡
     playerDie() {
-        this.dieState = true;
-        this.otherNode1.getComponent(Map).MapMoveSpeed = 0;
-        let newX: number = this.bornPos.x;
-        let newY: number = -800;
-        let newZ: number = this.bornPos.z;
-    
-        /*
-        resources.load(
-            "Images/Img/planeDestory/spriteFrame",
-            SpriteFrame,
-            (err: Error, res: SpriteFrame) => {
-                if (err) {
-                    return console.error("load SpriteFrame failed:" + err);
-                }
-                this.node.getComponent(Sprite).spriteFrame = res;
-            });
-        */
-        this.otherNode1.getComponent(Map).stopPlaneBorn();
-        this.rebirthTimes -= 1;
-        console.log("rebirthTimes:" + this.rebirthTimes);
-        if (this.rebirthTimes = 0) {
+        if(this.rebirthTimes <= 0){
             this.StageFail();
-            
         }
-        else {
+        else{
+            this.dieState = true;
+            this.otherNode1.getComponent(Map).MapMoveSpeed = 0;
+            this.node.parent.getChildByName("Result").getComponent(Result).Show("Die(" + this.rebirthTimes + ")","#E9A224");
+            /*
+            resources.load(
+                "Images/Img/planeDestory/spriteFrame",
+                SpriteFrame,
+                (err: Error, res: SpriteFrame) => {
+                    if (err) {
+                        return console.error("load SpriteFrame failed:" + err);
+                    }
+                    this.node.getComponent(Sprite).spriteFrame = res;
+                });
+            */
+            this.otherNode1.getComponent(Map).stopPlaneBorn();
+            this.rebirthTimes -= 1;
+            console.log("剩余生命：" + this.rebirthTimes);
             setTimeout(() => {
-                resources.load(
-                    "Images/Player/img_player_adv_01/spriteFrame",
-                    SpriteFrame,
-                    (err: Error, res: SpriteFrame) => {
-                        if (err) {
-                            return console.error("load SpriteFrame failed:" + err);
-                        }
-                        this.node.getComponent(Sprite).spriteFrame = res;
-                    });
-                this.otherNode1.getComponent(Map).PlaneBorn();
                 this.dieState = false;
+                this.otherNode1.getComponent(Map).PlaneBorn();
                 this.otherNode1.getComponent(Map).MapMoveSpeed = 100;
+                this.node.parent.getChildByName("Result").getComponent(Result).label.enabled = false;
             }, 3000);
         }
     }
     
     //闯关成功
     StagePass(){
-
+        this.dieState = true;
+        this.otherNode1.getComponent(Map).MapMoveSpeed = 0;
+        this.otherNode1.getComponent(Map).stopPlaneBorn();
+        this.node.parent.getChildByName("Result").getComponent(Result).Show("Victory","#EBFF00");
     }
 
     //闯关失败
     StageFail(){
-        this.KillScore = 0;
-        setTimeout(() => {
-            this.node?.destroy();
-        }, 500);
+        this.dieState = true;
+        this.otherNode1.getComponent(Map).MapMoveSpeed = 0;
+        this.otherNode1.getComponent(Map).stopPlaneBorn();
+        this.node.parent.getChildByName("Result").getComponent(Result).Show("Fail","#A9AA9A");
     }
 }

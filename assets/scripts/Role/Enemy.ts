@@ -1,4 +1,5 @@
-import { _decorator, Component, Node, resources, SpriteFrame, Sprite } from 'cc';
+import { _decorator, Component, Node, resources, SpriteFrame, Sprite, UITransform } from 'cc';
+import { Bullet } from '../Bullet/Bullet';
 import { Player } from './Player';
 const { ccclass, property } = _decorator;
 
@@ -7,10 +8,14 @@ export class Enemy extends Component {
     //配置属性
     enemyMoveSpeed: number = 200;
     otherNode1: Node = null;
+    BossBornScore: number = 30;
+    Enemy1_HP: number = 1;
+    uiTransform: UITransform = null;
     
     start(){
-        let a: Node = this.node.parent.getChildByName("planeNormal_2");
-        this.otherNode1 = a;
+        this.otherNode1 = this.node.parent.getChildByName("planeNormal_2");
+        this.uiTransform = this.node.getComponent(UITransform);
+        this.uiTransform.anchorY = 1;
     }
     
     update(deltaTime: number){
@@ -27,19 +32,26 @@ export class Enemy extends Component {
     }
 
     enemyDie(){
-        this.enemyMoveSpeed = 0;
-        resources.load(
-            "Images/Img/planeDestory/spriteFrame",
-            SpriteFrame,
-            (err: Error, res: SpriteFrame) => {
-                if (err) {
-                    return console.error("load SpriteFrame failed:" + err);
-                }
-                this.node.getComponent(Sprite).spriteFrame  = res;
-            });
-        //一定要给延时，逻辑执行完再销毁
-        setTimeout(() => {
-            this.node?.destroy();
-        }, 200);
+        this.Enemy1_HP -= this.node.parent.getChildByName("img_bullet_01").getComponent(Bullet).BulletDamage;
+        if(this.Enemy1_HP == 0){
+            this.enemyMoveSpeed = 0;
+            let a = this.otherNode1.getComponent(Player).KillScore;
+            if(a < this.BossBornScore){
+                this.otherNode1.getComponent(Player).KillScore += 1;
+            }
+            resources.load(
+                "Images/Img/planeDestory/spriteFrame",
+                SpriteFrame,
+                (err: Error, res: SpriteFrame) => {
+                    if (err) {
+                        return console.error("load SpriteFrame failed:" + err);
+                    }
+                    this.node.getComponent(Sprite).spriteFrame  = res;
+                });
+            //一定要给延时，逻辑执行完再销毁
+            setTimeout(() => {
+                this.node?.destroy();
+            }, 200);
+        }
     }
 }
