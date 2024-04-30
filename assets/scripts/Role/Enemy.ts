@@ -23,6 +23,13 @@ export class Enemy extends Component {
         let newY: number = this.node.position.y - this.enemyMoveSpeed * deltaTime;
         let newZ: number = this.node.position.z;
         this.node.setPosition(newX, newY, newZ);
+        //飞出屏幕处理
+        if(newY < -600){
+            setTimeout(() => {
+                this.node?.destroy();
+            }, 200); 
+        }
+        //玩家死亡处理
         if(this.otherNode1.getComponent(Player).dieState == true){
             this.enemyMoveSpeed = 0;
         }

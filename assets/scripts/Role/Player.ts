@@ -1,6 +1,7 @@
 import { _decorator, Component, Node, NodeEventType, v3, Prefab, EventTouch, instantiate, Vec3, math } from 'cc';
 import { Map } from '../Map/Map';
 import { Result } from '../UI/Result';
+import { Boss } from './Boss';
 
 const { ccclass, property } = _decorator;
 
@@ -26,6 +27,7 @@ export class Player extends Component {
     bornPos: Vec3 = null;
     bulletShootCD: number = 0.5;
     curShootCD: number = 0;
+    isBossBorn: boolean = false;
 
     //Desc
     NoPlaneLevel: string = "飞机等级异常。";
@@ -71,9 +73,12 @@ export class Player extends Component {
             this.node.setPosition(this.bornPos);                
         }
 
-        if(this.KillScore >= 30 && this.KillScore < 100){
-            this.otherNode1.getComponent(Map).stopPlaneBorn();
-            this.otherNode1.getComponent(Map).BossBorn();
+        if(this.KillScore >= 30 && this.KillScore < 100 && this.isBossBorn == false){
+                this.otherNode1.getComponent(Map).stopPlaneBorn();
+                this.isBossBorn = true;  
+                setTimeout(() => {
+                    this.otherNode1.getComponent(Map).BossBorn();
+                }, 100);
         }
         else if(this.KillScore >= 100){
             this.StagePass();
@@ -88,7 +93,7 @@ export class Player extends Component {
         else{
             this.dieState = true;
             this.otherNode1.getComponent(Map).MapMoveSpeed = 0;
-            this.node.parent.getChildByName("Result").getComponent(Result).Show("Die(" + this.rebirthTimes + ")","#E9A224");
+            this.node.parent.parent.getChildByName("UI").getChildByName("Result").getComponent(Result).Show("Die(" + this.rebirthTimes + ")","#E9A224");
             /*
             resources.load(
                 "Images/Img/planeDestory/spriteFrame",
@@ -102,13 +107,22 @@ export class Player extends Component {
             */
             this.otherNode1.getComponent(Map).stopPlaneBorn();
             this.rebirthTimes -= 1;
-            console.log("剩余生命：" + this.rebirthTimes);
-            setTimeout(() => {
-                this.dieState = false;
-                this.otherNode1.getComponent(Map).PlaneBorn();
-                this.otherNode1.getComponent(Map).MapMoveSpeed = 100;
-                this.node.parent.getChildByName("Result").getComponent(Result).label.enabled = false;
-            }, 3000);
+            if(this.isBossBorn == false){
+                setTimeout(() => {
+                    this.dieState = false;
+                    this.otherNode1.getComponent(Map).PlaneBorn();
+                    this.otherNode1.getComponent(Map).MapMoveSpeed = 100;
+                    this.node.parent.parent.getChildByName("UI").getChildByName("Result").getComponent(Result).label.enabled = false;
+                }, 3000);
+            }
+            else{
+                setTimeout(() => {
+                    this.dieState = false;
+                    this.otherNode1.getComponent(Map).MapMoveSpeed = 100;
+                    this.node.parent.getChildByName(this.node.parent.parent.getChildByName("MapGroup").getComponent(Map).bossNode).getComponent(Boss).bossMoveSpeedX = 80;
+                    this.node.parent.parent.getChildByName("UI").getChildByName("Result").getComponent(Result).label.enabled = false;
+                }, 3000);  
+            }
         }
     }
     
@@ -117,7 +131,7 @@ export class Player extends Component {
         this.dieState = true;
         this.otherNode1.getComponent(Map).MapMoveSpeed = 0;
         this.otherNode1.getComponent(Map).stopPlaneBorn();
-        this.node.parent.getChildByName("Result").getComponent(Result).Show("Victory","#EBFF00");
+        this.node.parent.parent.getChildByName("UI").getChildByName("Result").getComponent(Result).Show("Victory","#EBFF00");
     }
 
     //闯关失败
@@ -125,6 +139,6 @@ export class Player extends Component {
         this.dieState = true;
         this.otherNode1.getComponent(Map).MapMoveSpeed = 0;
         this.otherNode1.getComponent(Map).stopPlaneBorn();
-        this.node.parent.getChildByName("Result").getComponent(Result).Show("Fail","#A9AA9A");
+        this.node.parent.parent.getChildByName("UI").getChildByName("Result").getComponent(Result).Show("Fail","#A9AA9A");
     }
 }

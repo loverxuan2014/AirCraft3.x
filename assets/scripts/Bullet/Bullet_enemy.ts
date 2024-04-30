@@ -1,18 +1,19 @@
 import { _decorator, Component, Node, resources, SpriteFrame, Sprite, Prefab } from 'cc';
 const { ccclass, property } = _decorator;
 
-@ccclass('Bullet')
-export class Bullet extends Component {
+@ccclass('Bullet_enemy')
+export class Bullet_enemy extends Component {
     BulletMoveSpeed: number = 500;
     BulletDamage: number = 1;
 
     update(deltaTime: number) {
+        console.log("boss shooting");
         let newX: number = this.node.position.x;
-        let newY: number = this.node.position.y + this.BulletMoveSpeed * deltaTime;
+        let newY: number = this.node.position.y - this.BulletMoveSpeed * deltaTime;
         let newZ: number = this.node.position.z;
         this.node.setPosition(newX, newY, newZ);
 
-        if(newY > 1500){
+        if(newY < -1500){
             setTimeout(() => {
                 this.node?.destroy();
             }, 300);

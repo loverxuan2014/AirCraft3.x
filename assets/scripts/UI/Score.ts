@@ -11,7 +11,7 @@ export class Score extends Component {
     }
 
     update(deltaTime: number) {
-        this.label.string = "Score:" + this.node.parent.getChildByName("planeNormal_2").getComponent(Player).KillScore;
+        this.label.string = "Score:" + this.node.parent.parent.getChildByName("Plane").getChildByName("planeNormal_2").getComponent(Player).KillScore;
     }
 }
 

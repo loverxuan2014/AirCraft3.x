@@ -1,5 +1,7 @@
 import { _decorator, Component, Node, PhysicsSystem2D, Contact2DType, BoxCollider2D} from 'cc';
 import { Bullet } from '../Bullet/Bullet';
+import { Bullet_enemy } from '../Bullet/Bullet_enemy';
+import { Boss } from '../Role/Boss';
 import { Enemy } from '../Role/Enemy';
 import { Player } from '../Role/Player';
 
@@ -29,9 +31,20 @@ export class ColliderManager extends Component {
             selfCollider.tag === 1 ? selfCollider.getComponent(Enemy).enemyDie() : selfCollider.getComponent(Player).playerDie();
             otherCollider.tag === 2 ? otherCollider.getComponent(Player).playerDie() : otherCollider.getComponent(Enemy).enemyDie();
        }
-       //敌方子弹与我方飞机碰撞时
+       //我方子弹与boss碰撞时
+        if ((selfCollider.tag === 0 && otherCollider.tag === 5) || (selfCollider.tag === 5 && otherCollider.tag === 0)) {
+            selfCollider.tag === 0 ? selfCollider.getComponent(Bullet).bulletDie() : selfCollider.getComponent(Boss).bossDie();
+            otherCollider.tag === 5 ? otherCollider.getComponent(Boss).bossDie() : otherCollider.getComponent(Bullet).bulletDie();
+       }
+       //boss与我方飞机碰撞时
+       if((selfCollider.tag === 6 && otherCollider.tag === 2) || (selfCollider.tag === 2 && otherCollider.tag === 6)){
+            selfCollider.tag === 6 ? selfCollider.getComponent(Boss).bossDie() : selfCollider.getComponent(Player).playerDie();
+            otherCollider.tag === 2 ? otherCollider.getComponent(Player).playerDie() : otherCollider.getComponent(Boss).bossDie();
+       }
+       //boss子弹与我方飞机碰撞时
        if((selfCollider.tag === 3 && otherCollider.tag === 2) || (selfCollider.tag === 2 && otherCollider.tag === 3)){
-
+            selfCollider.tag === 3 ? selfCollider.getComponent(Bullet_enemy).bulletDie() : selfCollider.getComponent(Player).playerDie();
+            otherCollider.tag === 2 ? otherCollider.getComponent(Player).playerDie() : otherCollider.getComponent(Bullet_enemy).bulletDie();
        }
     }
 }

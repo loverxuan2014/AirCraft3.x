@@ -16,5 +16,3 @@ export class Result extends Component {
         this.label.color = new Color().fromHEX(color);
     }
 }
-
-

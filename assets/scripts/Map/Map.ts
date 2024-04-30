@@ -1,9 +1,10 @@
-import { _decorator, Component, Node, UITransform, Prefab, instantiate, v3, math } from 'cc';
+import { _decorator, Component, Node, UITransform, Prefab, instantiate, v3, math, Collider2D } from 'cc';
+import { Boss } from '../Role/Boss';
 const { ccclass, property } = _decorator;
 
 @ccclass('Map')
 export class Map extends Component {
-    //Õ‚≤ø Ù–‘
+    //Â§ñÈÉ®Â±ûÊÄß
     @property(Prefab)
     enemyPre1: Prefab = null;
     @property(Prefab)
@@ -17,20 +18,21 @@ export class Map extends Component {
     @property(Prefab)
     BossPre5: Prefab = null;
 
-    //≈‰÷√ Ù–‘
+    //ÈÖçÁΩÆÂ±ûÊÄß
     MapMoveSpeed: number = 100;
     enemyBornCD: number = 1000;
     enemyBornY: number = 578;
     planeBorn: number = null;
+    bossNode: string = null;
 
     start() {
         this.PlaneBorn();
-        //ªÒ»°audio≤•∑≈»®œﬁ
+        //Ëé∑ÂèñaudioÊí≠ÊîæÊùÉÈôê
         //navigator.mediaDevices.getUserMedia({ audio: true });
     }
 
     update(deltaTime: number) {
-        //≥°æ∞“∆∂Ø
+        //Âú∫ÊôØÁßªÂä®
         for (let map of this.node.children) {
             let mapSize = map.getComponent(UITransform).contentSize;
             let newX: number = map.position.x;
@@ -44,30 +46,48 @@ export class Map extends Component {
     }
 
     PlaneBorn() {
-        //…˙≥…∑…ª˙
+        //ÁîüÊàêÈ£ûÊú∫
         this.planeBorn = setInterval(() => {
             let enemy = instantiate(this.enemyPre1);
-            enemy.setParent(this.node.getParent());
+            enemy.setParent(this.node.parent.getChildByName("Plane"));
             enemy.setPosition(v3(math.randomRange(-260, 260), this.enemyBornY));
         }, this.enemyBornCD);
     }
 
     stopPlaneBorn() {
-        //Õ£÷π∑…ª˙…˙≥…º∆ ±∆˜
+        //ÂÅúÊ≠¢È£ûÊú∫ÁîüÊàêËÆ°Êó∂Âô®
         clearInterval(this.planeBorn);
     }
 
     BossBorn(){
         let bossNum: number = Math.floor(math.randomRange(1,6));
-        let boss = null;
+        let boss: Node = null;
+        let bossNode: string = null;
         switch(bossNum){
-            case 1: boss = instantiate(this.BossPre1);
-            case 2: boss = instantiate(this.BossPre2);
-            case 3: boss = instantiate(this.BossPre3);
-            case 4: boss = instantiate(this.BossPre4);
-            case 5: boss = instantiate(this.BossPre5);
+            case 1: 
+                boss = instantiate(this.BossPre1);
+                bossNode = "img_boss_01";
+                break;
+            case 2: 
+                boss = instantiate(this.BossPre2);
+                bossNode = "img_boss_02";
+                break;
+            case 3: 
+                boss = instantiate(this.BossPre3);
+                bossNode = "img_boss_03";
+                break;
+            case 4: 
+                boss = instantiate(this.BossPre4);
+                bossNode = "img_boss_04";
+                break;
+            case 5: 
+                boss = instantiate(this.BossPre5);
+                bossNode = "img_boss_05";
+                break;
         }
-        boss.setParent(this.node.getParent());
-        boss.setPosition(v3(26, 720));
+        boss.getComponent(Boss).bossID = bossNum;
+        boss.setPosition(v3(0, 500));
+        boss.setParent(this.node.parent.getChildByName("Plane"));
+        this.bossNode = boss.name;
     }
 }
